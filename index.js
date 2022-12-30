@@ -14,33 +14,13 @@ document.addEventListener('click', function(e){
     else if(e.target.id === 'tweet-btn'){
         handleTweetBtnClick()
     }
-     }) 
     
-    /*  //about reply MYVERSION
-    document.addEventListener("onkeydown", function(e){
-       if(e.keyCode == 13){
-           const tweetInput = document.getElementById('tweet-input')
-
-    if(tweetInput.value){
-        tweetsData.push({
-            handle: `@Scrimba`,
-            profilePic: `images/scrimbalogo.png`,
-            likes: 0,
-            retweets: 0,
-            tweetText: tweetInput.value,
-            replies: [],
-            isLiked: false,
-            isRetweeted: false,
-            uuid: uuidv4()
-        })
-    render() 
-    tweetInput.value = ''
-    }} 
-    */   
-   
-
-
-
+    else if(e.target.dataset.replyspecial){
+        handleReplyspecialClick(e.target.dataset.replyspecial)
+    }
+    
+    
+})
  
 function handleLikeClick(tweetId){ 
     const targetTweetObj = tweetsData.filter(function(tweet){
@@ -74,11 +54,6 @@ function handleRetweetClick(tweetId){
 
 function handleReplyClick(replyId){
     document.getElementById(`replies-${replyId}`).classList.toggle('hidden')
-    
-    
-    //document.getElementById(`replies-${replyId}`).classList.toggle('reply-tweet')
-  
-    
 }
 
 function handleTweetBtnClick(){
@@ -102,8 +77,19 @@ function handleTweetBtnClick(){
 
 }
 
+
+
+function handleReplyspecialClick(replyspecialId){
+    //console.log("I am  a new reply icon")
+   document.getElementById(`replyspecial-${replyspecialId}`).classList.toggle("hidden")
+  
+}
+
+
+
 function getFeedHtml(){
     let feedHtml = ``
+   
     
     tweetsData.forEach(function(tweet){
         
@@ -118,11 +104,12 @@ function getFeedHtml(){
         if (tweet.isRetweeted){
             retweetIconClass = 'retweeted'
         }
+       
+        
         
         let repliesHtml = ''
-        let repliesTweets = ''
         
-        if(tweet.replies.length >= 0){
+        if(tweet.replies.length > 0){
             tweet.replies.forEach(function(reply){
                 repliesHtml+=`
 <div class="tweet-reply">
@@ -132,22 +119,33 @@ function getFeedHtml(){
                 <p class="handle">${reply.handle}</p>
                 <p class="tweet-text">${reply.tweetText}</p>
             </div>
-    </div>
+        </div>
 </div>
 `
-  })
- repliesTweets +=`
-	
-		<div class="tweet-input-area reply-tweet"  id="reply-tweet">
-			<img src="images/scrimbalogo.png" class="profile-pic">
-			<textarea placeholder="Tweet your reply" id="tweet-input"></textarea>
-		</div>		
-
-
-
-`
-          
+            })
         }
+        
+        
+        
+       let repliesHtmlSpecial = ''
+       
+       repliesHtmlSpecial +=` 
+          <div class="tweet-reply">
+    <div class="tweet-inner">
+        <img src="images/scrimbalogo.png" class="profile-pic">
+            <div>
+                <p class="handle">@Scrimba</p>
+                <p class="tweet-text">Hi</p>
+            </div>
+        </div>
+</div>
+       
+       
+       `
+       
+       
+        
+        
         
           
         feedHtml += `
@@ -176,13 +174,25 @@ function getFeedHtml(){
                     ></i>
                     ${tweet.retweets}
                 </span>
+                
+                <span class="tweet-detail">
+                   <i class="fa-solid fa-reply "
+                   data-replyspecial="${tweet.uuid}"
+                   ></i>
+                </span>
+                
             </div>   
         </div>            
     </div>
     <div class="hidden" id="replies-${tweet.uuid}">
         ${repliesHtml}
-        ${repliesTweets}
-    </div>   
+    </div> 
+   
+   <div class="hidden " id="replyspecial-${tweet.uuid}">
+        ${repliesHtmlSpecial}
+    </div>  
+    
+      
 </div>
 `
    })
