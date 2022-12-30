@@ -29,6 +29,10 @@ i{
   color: limegreen;
 }
 
+
+.replyspecial{
+    color: limegreen; 
+}
 /* layout */
 
 main, header{
@@ -130,13 +134,3 @@ button{
 .hidden{
     display: none;
 }
-
-/* modal reply pop-up */
-/* .reply-tweet{
-    position:fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right:0;
-    margin: auto;
-} */
