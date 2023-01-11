@@ -107,7 +107,7 @@ button{
     padding: 20px 0 0 0px;
     margin: 10px 0 10px 40px;
     width: 80%;
-}
+   }
 
 .handle{
     font-size: 12px;
@@ -134,3 +134,15 @@ button{
 .hidden{
     display: none;
 }
+
+
+.tweet-reply-text{
+    margin-top: 30px; 
+}
+
+.fa-reply:hover,
+.fa-comment-dots:hover
+{
+    color:limegreen;
+}
+

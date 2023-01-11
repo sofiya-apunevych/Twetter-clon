@@ -15,10 +15,17 @@ document.addEventListener('click', function(e){
         handleTweetBtnClick()
     }
     
+    
+    
     else if(e.target.dataset.replyspecial){
-        handleReplyspecialClick(e.target.dataset.replyspecial)
+        handleReplySpecialClick(e.target.dataset.replyspecial)
+    }
+    else if (e.target.dataset.answer){//twreply
+        handleReplyTweetBtnClick(e.target.dataset.answer)
     }
     
+    
+ 
     
 })
  
@@ -72,6 +79,7 @@ function handleTweetBtnClick(){
             uuid: uuidv4()
         })
     render()
+    
     tweetInput.value = ''
     }
 
@@ -79,14 +87,37 @@ function handleTweetBtnClick(){
 
 
 
-function handleReplyspecialClick(replyspecialId){
-    //console.log("I am  a new reply icon")
-   document.getElementById(`replyspecial-${replyspecialId}`).classList.toggle("hidden")
+function handleReplySpecialClick(replyspecialId){
+  
+    document.getElementById(`tweet-reply-text-${replyspecialId}`).classList.toggle("hidden")
+    
+}
+   
+   
+   
+   
+function handleReplyTweetBtnClick(replyspecialId){
+   
+    const tweetReplyArea = document.getElementById(`tweet-reply-area-${replyspecialId}`)
+    const targetTweetObj = tweetsData.filter(function(tweet){
+        return tweet.uuid === replyspecialId
+    })[0]
+ 
+   if(tweetReplyArea.value){
+        targetTweetObj.replies.unshift({
+            handle: `@Scrimba`,
+            profilePic: `images/scrimbalogo.png`,
+            tweetText: tweetReplyArea.value,
+            uuid: uuidv4()
+        })
+    render()
+    //handleReplySpecialClick(replyspecialId)
+    //handleReplyClick(replyspecialId)
+    //tweetReplyArea.value = ''
+    }
   
 }
-
-
-
+  
 function getFeedHtml(){
     let feedHtml = ``
    
@@ -124,29 +155,7 @@ function getFeedHtml(){
 `
             })
         }
-        
-        
-        
-       let repliesHtmlSpecial = ''
        
-       repliesHtmlSpecial +=` 
-          <div class="tweet-reply">
-    <div class="tweet-inner">
-        <img src="images/scrimbalogo.png" class="profile-pic">
-            <div>
-                <p class="handle">@Scrimba</p>
-                <p class="tweet-text">Hi</p>
-            </div>
-        </div>
-</div>
-       
-       
-       `
-       
-       
-        
-        
-        
           
         feedHtml += `
 <div class="tweet">
@@ -180,6 +189,24 @@ function getFeedHtml(){
                    data-replyspecial="${tweet.uuid}"
                    ></i>
                 </span>
+         </div>        
+                
+        <div id="tweet-reply-text-${tweet.uuid}" class="tweet-reply-text hidden">
+           <div class="tweet-inner">      
+      
+            <div>
+              <img src="images/scrimbalogo.png" class="profile-pic">
+                <p class="handle">@Scrimba</p>
+              
+            </div>
+            <div>
+             <textarea placeholder="Tweet your reply.." id="tweet-reply-area-${tweet.uuid}" data-twreply="${tweet.uuid}"></textarea>
+           <button  data-answer ="${tweet.uuid}">Reply</button>  
+            </div>
+            
+       
+        </div>
+  
                 
             </div>   
         </div>            
@@ -187,11 +214,6 @@ function getFeedHtml(){
     <div class="hidden" id="replies-${tweet.uuid}">
         ${repliesHtml}
     </div> 
-   
-   <div class="hidden " id="replyspecial-${tweet.uuid}">
-        ${repliesHtmlSpecial}
-    </div>  
-    
       
 </div>
 `
@@ -199,9 +221,18 @@ function getFeedHtml(){
    return feedHtml 
 }
 
+
+
+
+
 function render(){
     document.getElementById('feed').innerHTML = getFeedHtml()
 }
 
 render()
+
+
+
+
+//id="reply-tweet-btn-${tweet.uuid}"
 
