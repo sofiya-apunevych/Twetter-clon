@@ -1,72 +1,80 @@
 import { tweetsData } from './data.js'
 import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
 
-document.addEventListener('click', function(e){
-    if(e.target.dataset.like){
-       handleLikeClick(e.target.dataset.like) 
+document.addEventListener('click', function (e) {
+    if (e.target.dataset.like) {
+        handleLikeClick(e.target.dataset.like)
     }
-    else if(e.target.dataset.retweet){
+    else if (e.target.dataset.retweet) {
         handleRetweetClick(e.target.dataset.retweet)
     }
-    else if(e.target.dataset.reply){
+    else if (e.target.dataset.reply) {
         handleReplyClick(e.target.dataset.reply)
     }
-    else if(e.target.id === 'tweet-btn'){
+    else if (e.target.id === 'tweet-btn') {
         handleTweetBtnClick()
     }
-    
-    
-    
-    else if(e.target.dataset.replyspecial){
+    else if (e.target.dataset.replyspecial) {
         handleReplySpecialClick(e.target.dataset.replyspecial)
     }
-    else if (e.target.dataset.answer){//twreply
+    else if (e.target.dataset.answer) {//twreply
         handleReplyTweetBtnClick(e.target.dataset.answer)
     }
-    
-    
- 
-    
+
 })
- 
-function handleLikeClick(tweetId){ 
-    const targetTweetObj = tweetsData.filter(function(tweet){
+
+function handleLikeClick(tweetId) {
+    const targetTweetObj = tweetsData.filter(function (tweet) {
         return tweet.uuid === tweetId
     })[0]
 
-    if (targetTweetObj.isLiked){
+    if (targetTweetObj.isLiked) {
         targetTweetObj.likes--
     }
-    else{
-        targetTweetObj.likes++ 
+    else {
+        targetTweetObj.likes++
     }
     targetTweetObj.isLiked = !targetTweetObj.isLiked
     render()
 }
 
-function handleRetweetClick(tweetId){
-    const targetTweetObj = tweetsData.filter(function(tweet){
+function handleRetweetClick(tweetId) {
+    const targetTweetObj = tweetsData.filter(function (tweet) {
         return tweet.uuid === tweetId
     })[0]
-    
-    if(targetTweetObj.isRetweeted){
+
+    if (targetTweetObj.isRetweeted) {
         targetTweetObj.retweets--
     }
-    else{
+    else {
         targetTweetObj.retweets++
     }
     targetTweetObj.isRetweeted = !targetTweetObj.isRetweeted
-    render() 
+    render()
 }
 
-function handleReplyClick(replyId){
+function handleReplyClick(replyId) {
     document.getElementById(`replies-${replyId}`).classList.toggle('hidden')
 }
 
-function handleTweetBtnClick(){
-    const tweetInput = document.getElementById('tweet-input')
 
-    if(tweetInput.value){
+let postScrimba = []
+
+
+function handleTweetBtnClick() {
+    const tweetInput = document.getElementById('tweet-input')
+    
+    
+    
+postScrimba.push(tweetInput.value)
+tweetInput.value = ""
+localStorage.setItem("postScrimba", JSON.stringify(postScrimba) )
+console.log( JSON.parse(localStorage.getItem("postScrimba") ))
+
+    
+    
+
+    if (tweetInput.value) {
         tweetsData.unshift({
             handle: `@Scrimba`,
             profilePic: `images/scrimbalogo.png`,
@@ -78,71 +86,67 @@ function handleTweetBtnClick(){
             isRetweeted: false,
             uuid: uuidv4()
         })
-    render()
-    
-    tweetInput.value = ''
+        render()
+
+        tweetInput.value = ''
     }
-
 }
 
 
-
-function handleReplySpecialClick(replyspecialId){
-  
+function handleReplySpecialClick(replyspecialId) {
     document.getElementById(`tweet-reply-text-${replyspecialId}`).classList.toggle("hidden")
-    
 }
-   
-   
-   
-   
-function handleReplyTweetBtnClick(replyspecialId){
-   
+
+let postsReply = []
+
+function handleReplyTweetBtnClick(replyspecialId) {
     const tweetReplyArea = document.getElementById(`tweet-reply-area-${replyspecialId}`)
-    const targetTweetObj = tweetsData.filter(function(tweet){
+    const targetTweetObj = tweetsData.filter(function (tweet) {
         return tweet.uuid === replyspecialId
     })[0]
- 
-   if(tweetReplyArea.value){
+    
+            
+
+postsReply.push(tweetReplyArea.value)
+tweetReplyArea.value = ""
+localStorage.setItem("postsReply", JSON.stringify(postsReply) )
+console.log( JSON.parse(localStorage.getItem("postsReply") ))
+
+    if (tweetReplyArea.value) {
         targetTweetObj.replies.unshift({
             handle: `@Scrimba`,
             profilePic: `images/scrimbalogo.png`,
             tweetText: tweetReplyArea.value,
             uuid: uuidv4()
         })
-    render()
-    //handleReplySpecialClick(replyspecialId)
-    //handleReplyClick(replyspecialId)
-    //tweetReplyArea.value = ''
+        render()
+        
+
     }
-  
 }
-  
-function getFeedHtml(){
+
+function getFeedHtml() {
     let feedHtml = ``
-   
-    
-    tweetsData.forEach(function(tweet){
-        
+
+    tweetsData.forEach(function (tweet) {
+
         let likeIconClass = ''
-        
-        if (tweet.isLiked){
+
+        if (tweet.isLiked) {
             likeIconClass = 'liked'
         }
-        
+
         let retweetIconClass = ''
-        
-        if (tweet.isRetweeted){
+
+        if (tweet.isRetweeted) {
             retweetIconClass = 'retweeted'
         }
-       
-        
-        
+
         let repliesHtml = ''
-        
-        if(tweet.replies.length > 0){
-            tweet.replies.forEach(function(reply){
-                repliesHtml+=`
+
+        if (tweet.replies.length > 0) {
+            tweet.replies.forEach(function (reply) {
+                repliesHtml += `
 <div class="tweet-reply">
     <div class="tweet-inner">
         <img src="${reply.profilePic}" class="profile-pic">
@@ -155,8 +159,8 @@ function getFeedHtml(){
 `
             })
         }
-       
-          
+
+
         feedHtml += `
 <div class="tweet">
     <div class="tweet-inner">
@@ -204,7 +208,6 @@ function getFeedHtml(){
            <button  data-answer ="${tweet.uuid}">Reply</button>  
             </div>
             
-       
         </div>
   
                 
@@ -217,15 +220,11 @@ function getFeedHtml(){
       
 </div>
 `
-   })
-   return feedHtml 
+    })
+    return feedHtml
 }
 
-
-
-
-
-function render(){
+function render() {
     document.getElementById('feed').innerHTML = getFeedHtml()
 }
 
@@ -233,6 +232,4 @@ render()
 
 
 
-
-//id="reply-tweet-btn-${tweet.uuid}"
 
